@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) => LoginUi(),
           );
-        } else if (settings.name == ADD_EXPENSES_ROUTE) {
+        } else if (settings.name == GRAPH_ROUTE) {
           return MaterialPageRoute(
             builder: (context) => AddExpenseView(),
           );
@@ -53,7 +53,9 @@ class MyApp extends StatelessWidget {
             builder: (context) => ShowExpenseView(),
           );
         }
+        return null;
       },
+
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }

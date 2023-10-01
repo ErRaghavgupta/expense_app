@@ -1,5 +1,4 @@
 import 'package:expense_app2/Database/Appdatabase.dart';
-import 'package:expense_app2/Models/usermodel.dart';
 import 'package:expense_app2/Routes/routes.dart';
 import 'package:expense_app2/customWidgets/textfield.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +106,7 @@ class _LoginUiState extends State<LoginUi> {
                   if ((await myDb.authenticateUser(mail, pass)) == true) {
                     emailController.clear();
                     passwordController.clear();
-                    Navigator.pushNamed(context, ADD_EXPENSES_ROUTE);
+                    Navigator.pushNamed(context, GRAPH_ROUTE);
                   } else {
                     showDialog(
                       context: context,
