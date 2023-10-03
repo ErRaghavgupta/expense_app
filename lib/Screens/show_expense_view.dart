@@ -25,7 +25,6 @@ class _ShowExpenseViewState extends State<ShowExpenseView> {
   var selectCategoriesIndex = -1;
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

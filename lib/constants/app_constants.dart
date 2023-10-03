@@ -1,5 +1,9 @@
 import 'package:expense_app2/constants/ImageConstants.dart';
 
+import '../Models/expense_model.dart';
+import '../Models/filtered_expense_model.dart';
+import '../Screens/graph_view.dart';
+
 class AppConstants {
   static const List<Map<String, dynamic>> categories = [
     {"id": 1, "name": "travel", "img": ImageConstants.travelImage},
@@ -15,4 +19,44 @@ class AppConstants {
     {"id": 11, "name": "tools", "img": ImageConstants.toolsImage},
     {"id": 12, "name": "vegetables", "img": ImageConstants.vegetablesImage},
   ];
+
+  static void filteringMonthWiseExpense(List<ExpenseModel> expenses) {
+    GraphView.arrMonthWiseExpense.clear();
+    GraphView.totalMonthAmount = 0;
+    List<String> eachUniqueMonth = [];
+    for (ExpenseModel model in expenses) {
+      var eachMonth = DateTime.parse(model.expense_time);
+      var month =
+          "${eachMonth.year}-${eachMonth.month.toString().length < 2 ? "0${eachMonth.month}" : "${eachMonth.month}"}";
+
+      if (!eachUniqueMonth.contains(month)) {
+        eachUniqueMonth.add(month);
+      }
+    }
+
+    // step 2;
+    for (String uniqueMonths in eachUniqueMonth) {
+      List<ExpenseModel> expenseModel = [];
+      num eachMonthAmount = 0;
+      for (ExpenseModel model in expenses) {
+        if (model.expense_time.contains(uniqueMonths)) {
+          expenseModel.add(model);
+          if (model.expense_type == 0) {
+            // debit
+            eachMonthAmount = eachMonthAmount - model.expense_amt;
+          } else {
+            eachMonthAmount = eachMonthAmount + model.expense_amt;
+          }
+        }
+      }
+      if (eachMonthAmount > GraphView.maxAmount) {
+        GraphView.maxAmount = eachMonthAmount;
+      }
+      GraphView.arrMonthWiseExpense.add(FilteredExpenseModel(
+          dateName: uniqueMonths,
+          eachDateAmt: eachMonthAmount,
+          arrExpenses: expenseModel));
+      GraphView.totalMonthAmount = GraphView.totalMonthAmount + eachMonthAmount;
+    }
+  }
 }

@@ -10,18 +10,19 @@ import '../constants/app_constants.dart';
 class GraphView extends StatefulWidget {
   const GraphView({super.key});
 
+  static List<FilteredExpenseModel> arrDateWiseExpense = [];
+  static List<FilteredExpenseModel> arrMonthWiseExpense = [];
+  static List<FilteredExpenseModel> arrYearWiseExpense = [];
+  static num totalDateAmount = 0;
+  static num totalMonthAmount = 0;
+  static num totalYearAmount = 0;
+  static num maxAmount = 0;
+
   @override
   State<GraphView> createState() => _GraphViewState();
 }
 
 class _GraphViewState extends State<GraphView> {
-  List<FilteredExpenseModel> arrDateWiseExpense = [];
-  List<FilteredExpenseModel> arrMonthWiseExpense = [];
-  List<FilteredExpenseModel> arrYearWiseExpense = [];
-  num totalDateAmount = 0;
-  num totalMonthAmount = 0;
-  num totalYearAmount = 0;
-
   @override
   void initState() {
     super.initState();
@@ -71,7 +72,7 @@ class _GraphViewState extends State<GraphView> {
                               height: 200,
                               child: Center(
                                 child: Text(
-                                  "\$$totalDateAmount",
+                                  "\$${GraphView.totalDateAmount}",
                                   textScaleFactor: 1.5,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -80,9 +81,10 @@ class _GraphViewState extends State<GraphView> {
                             ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount: arrDateWiseExpense.length,
+                              itemCount: GraphView.arrDateWiseExpense.length,
                               itemBuilder: (context, index) {
-                                final data = arrDateWiseExpense[index];
+                                final data =
+                                    GraphView.arrDateWiseExpense[index];
                                 return Column(
                                   children: [
                                     Row(
@@ -144,8 +146,8 @@ class _GraphViewState extends State<GraphView> {
   // for filtering a data with date wise
 
   void filteringExpenseByDate(List<ExpenseModel> arrExpense) {
-    totalDateAmount = 0;
-    arrDateWiseExpense.clear();
+    GraphView.totalDateAmount = 0;
+    GraphView.arrDateWiseExpense.clear();
     List<String> eachUniqueDates = [];
     for (ExpenseModel eachExp in arrExpense) {
       var eachDate = DateTime.parse(eachExp.expense_time);
@@ -177,56 +179,17 @@ class _GraphViewState extends State<GraphView> {
         // print(eachDateAmount);
         // print(arrDateWiseExpense.length);
       }
-      arrDateWiseExpense.add(FilteredExpenseModel(
+      GraphView.arrDateWiseExpense.add(FilteredExpenseModel(
           dateName: eachExp,
           eachDateAmt: eachDateAmount,
           arrExpenses: eachDataExpense));
-      totalDateAmount = totalDateAmount + eachDateAmount;
-    }
-  }
-
-  // for filtering a month wise data
-
-  void filteringMonthWiseExpense(List<ExpenseModel> expenses) {
-    arrMonthWiseExpense.clear();
-    totalMonthAmount = 0;
-    List<String> eachUniqueMonth = [];
-    for (ExpenseModel model in expenses) {
-      var eachMonth = DateTime.parse(model.expense_time);
-      var month =
-          "${eachMonth.year}-${eachMonth.month.toString().length < 2 ? "0${eachMonth.month}" : "${eachMonth.month}"}";
-
-      if (!eachUniqueMonth.contains(month)) {
-        eachUniqueMonth.add(month);
-      }
-    }
-
-    // step 2;
-    for (String uniqueMonths in eachUniqueMonth) {
-      List<ExpenseModel> expenseModel = [];
-      num eachMonthAmount = 0;
-      for (ExpenseModel model in expenses) {
-        if (model.expense_time.contains(uniqueMonths)) {
-          expenseModel.add(model);
-          if (model.expense_type == 0) {
-            // debit
-            eachMonthAmount = eachMonthAmount - model.expense_amt;
-          } else {
-            eachMonthAmount = eachMonthAmount + model.expense_amt;
-          }
-        }
-      }
-      arrMonthWiseExpense.add(FilteredExpenseModel(
-          dateName: uniqueMonths,
-          eachDateAmt: eachMonthAmount,
-          arrExpenses: expenseModel));
-      totalMonthAmount = totalMonthAmount + eachMonthAmount;
+      GraphView.totalDateAmount = GraphView.totalDateAmount + eachDateAmount;
     }
   }
 
   void filteredExpenseByYear(List<ExpenseModel> arrExpense) {
-    arrYearWiseExpense.clear();
-    totalYearAmount = 0;
+    GraphView.arrYearWiseExpense.clear();
+    GraphView.totalYearAmount = 0;
     List<String> eachUniqueYear = [];
     for (ExpenseModel expenseModel in arrExpense) {
       var year = DateTime.parse(expenseModel.expense_time);
@@ -252,11 +215,11 @@ class _GraphViewState extends State<GraphView> {
           }
         }
       }
-      arrYearWiseExpense.add(FilteredExpenseModel(
+      GraphView.arrYearWiseExpense.add(FilteredExpenseModel(
           dateName: uniqueYear,
           eachDateAmt: eachYearAmount,
           arrExpenses: eachExpenseModel));
-      totalYearAmount = totalYearAmount + eachYearAmount;
+      GraphView.totalYearAmount = GraphView.totalYearAmount + eachYearAmount;
     }
   }
 }
